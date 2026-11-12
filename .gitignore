@@ -1,0 +1,18 @@
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# SQLite databases and transient journal files
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+
+# Local editor and operating system files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,167 @@
+{
+  "info": {
+    "_postman_id": "bd0f5a90-2c66-4f4a-9c44-7b6ab82ef515",
+    "name": "BeatBox Music Room API",
+    "description": "BeatBox Music Room API requests. Run requests in order to exercise the three-active-loan limit, fourth-loan rejection, and return-then-reborrow scenarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "musicianId", "value": "" },
+    { "key": "instrumentId", "value": "" },
+    { "key": "instrumentId2", "value": "" },
+    { "key": "instrumentId3", "value": "" },
+    { "key": "instrumentId4", "value": "" },
+    { "key": "loanId", "value": "" },
+    { "key": "loanId2", "value": "" },
+    { "key": "loanId3", "value": "" },
+    { "key": "replacementLoanId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/health" } }
+    },
+    {
+      "name": "Create musician",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('musicianId', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Asha Patel\",\n  \"email\": \"asha.patel@example.com\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/musicians" } }
+    },
+    {
+      "name": "Get all musicians",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/musicians" } }
+    },
+    {
+      "name": "Get musician by ID",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/musicians/{{musicianId}}" } }
+    },
+    {
+      "name": "Create instrument - loan 1",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('instrumentId', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Yamaha Acoustic Guitar\",\n  \"family\": \"Strings\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/instruments" } }
+    },
+    {
+      "name": "Create instrument - loan 2",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('instrumentId2', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Fender Electric Guitar\",\n  \"family\": \"Strings\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/instruments" } }
+    },
+    {
+      "name": "Create instrument - loan 3",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('instrumentId3', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Pearl Drum Kit\",\n  \"family\": \"Drums\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/instruments" } }
+    },
+    {
+      "name": "Create instrument - fourth loan attempt",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('instrumentId4', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Casio Digital Keyboard\",\n  \"family\": \"Keyboard\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/instruments" } }
+    },
+    {
+      "name": "Get all instruments",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/instruments" } }
+    },
+    {
+      "name": "Search instruments by family",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });", "pm.test('All results match Strings family', function () { pm.response.json().forEach(function (item) { pm.expect(item.family).to.eql('Strings'); }); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/instruments?family=Strings" } }
+    },
+    {
+      "name": "Get instrument by ID",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/instruments/{{instrumentId}}" } }
+    },
+    {
+      "name": "Create loan 1 - Asha active loan 1",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('loanId', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"musician_id\": {{musicianId}},\n  \"instrument_id\": {{instrumentId}},\n  \"loan_date\": \"2026-11-12\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Duplicate active instrument loan conflict",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 409 Conflict', function () { pm.response.to.have.status(409); });"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"musician_id\": {{musicianId}},\n  \"instrument_id\": {{instrumentId}}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Create loan 2 - Asha active loan 2",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('loanId2', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"musician_id\": {{musicianId}},\n  \"instrument_id\": {{instrumentId2}}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Create loan 3 - Asha active loan 3",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('loanId3', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"musician_id\": {{musicianId}},\n  \"instrument_id\": {{instrumentId3}}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Get all loans",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Get loan by ID",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/loans/{{loanId}}" } }
+    },
+    {
+      "name": "Fourth active loan rejection",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 409 Conflict', function () { pm.response.to.have.status(409); });", "pm.test('Limit response has exact message', function () { pm.expect(pm.response.json().error).to.eql('Limit of 3 reached'); });"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"musician_id\": {{musicianId}},\n  \"instrument_id\": {{instrumentId4}}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Return loan 1",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });", "pm.test('Loan is returned with return date', function () { var loan = pm.response.json(); pm.expect(loan.status).to.eql('returned'); pm.expect(loan.return_date).to.be.a('string'); });"] } }],
+      "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/loans/{{loanId}}/return" } }
+    },
+    {
+      "name": "Create replacement loan after return",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 201 Created', function () { pm.response.to.have.status(201); });", "pm.test('Returned loan frees an active-loan slot', function () { pm.expect(pm.response.json().status).to.eql('active'); });", "pm.collectionVariables.set('replacementLoanId', pm.response.json().id);"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"musician_id\": {{musicianId}},\n  \"instrument_id\": {{instrumentId}}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Update instrument",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 OK', function () { pm.response.to.have.status(200); });"] } }],
+      "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Casio Privia Keyboard\",\n  \"family\": \"Keyboard\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/instruments/{{instrumentId4}}" } }
+    },
+    {
+      "name": "Delete instrument",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 204 No Content', function () { pm.response.to.have.status(204); });"] } }],
+      "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/instruments/{{instrumentId4}}" } }
+    },
+    {
+      "name": "Invalid musician validation",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 400 Bad Request', function () { pm.response.to.have.status(400); });", "pm.test('JSON error is present', function () { pm.expect(pm.response.json().error).to.be.a('string'); });"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"\",\n  \"email\": \"not-an-email\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/musicians" } }
+    },
+    {
+      "name": "Duplicate musician conflict",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 409 Conflict', function () { pm.response.to.have.status(409); });"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Asha Duplicate\",\n  \"email\": \"asha.patel@example.com\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/musicians" } }
+    },
+    {
+      "name": "Invalid instrument status",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 400 Bad Request', function () { pm.response.to.have.status(400); });"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Invalid Status Instrument\",\n  \"family\": \"Strings\",\n  \"status\": \"broken\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/instruments" } }
+    },
+    {
+      "name": "Missing instrument returns 404",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 404 Not Found', function () { pm.response.to.have.status(404); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/instruments/999999" } }
+    },
+    {
+      "name": "Invalid loan request validation",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 400 Bad Request', function () { pm.response.to.have.status(400); });"] } }],
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"musician_id\": \"invalid\",\n  \"instrument_id\": 0\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/loans" } }
+    },
+    {
+      "name": "Missing loan returns 404",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 404 Not Found', function () { pm.response.to.have.status(404); });"] } }],
+      "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/loans/999999" } }
+    },
+    {
+      "name": "Return missing loan returns 404",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 404 Not Found', function () { pm.response.to.have.status(404); });"] } }],
+      "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/loans/999999/return" } }
+    }
+  ]
+}
