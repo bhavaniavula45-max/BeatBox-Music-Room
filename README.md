@@ -95,6 +95,8 @@ By default, the database is created at `database/beatbox.sqlite` when the applic
    }
    ```
 
+The root URL (`GET http://localhost:3000/`) returns a JSON project overview with status, available API endpoints, and the health check path.
+
 For development with automatic restarts, run `npm run dev`. Run the full automated test suite with `npm test`.
 
 The API accepts JSON request bodies. For JSON requests, send the `Content-Type: application/json` header.
@@ -105,6 +107,7 @@ Base URL when running locally: `http://localhost:3000`
 
 | Method | Path | Purpose | Success |
 |---|---|---|---|
+| `GET` | `/` | Show the project overview and available API endpoints | `200` |
 | `GET` | `/health` | Check whether the API is responding | `200` |
 | `GET` | `/api/musicians` | Retrieve all musicians | `200` |
 | `GET` | `/api/musicians/:id` | Retrieve one musician | `200` |
